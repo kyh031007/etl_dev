@@ -17,15 +17,15 @@ echo "Airflow 컨테이너 중지 중..."
 docker-compose down
 
 # PostgreSQL 상태 확인 및 시작
-echo "PostgreSQL 데이터베이스 상태 확인 중..."
-if ! docker-compose -f docker-compose-db.yml ps | grep -q "Up"; then
-    echo "PostgreSQL 데이터베이스 시작 중..."
-    docker-compose -f docker-compose-db.yml up -d
-    echo "데이터베이스 준비 대기 중..."
-    sleep 10
-else
-    echo "PostgreSQL 데이터베이스가 이미 실행 중입니다."
-fi
+# echo "PostgreSQL 데이터베이스 상태 확인 중..."
+# if ! docker-compose -f docker-compose-db.yml ps | grep -q "Up"; then
+#     echo "PostgreSQL 데이터베이스 시작 중..."
+#     docker-compose -f docker-compose-db.yml up -d
+#     echo "데이터베이스 준비 대기 중..."
+#     sleep 10
+# else
+#     echo "PostgreSQL 데이터베이스가 이미 실행 중입니다."
+# fi
 
 # Airflow 이미지 재빌드 및 실행
 echo "Airflow 재빌드 및 실행 중..."

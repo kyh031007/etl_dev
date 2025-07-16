@@ -1,25 +1,38 @@
+version: "3.8"
+
 services:
+  postgres:
+    image: postgres:13
+    container_name: air-pollution-db
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres_db_volume:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"  # 외부 포트 5434, 내부 포트 5432
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      retries: 5
+    restart: unless-stopped
+
   airflow-webserver:
     build: .
     command: webserver
     ports:
-      - "9090:8080"  # 외부 포트 9090, 내부 포트 8080
-    # depends_on 제거 - 외부 DB 사용
+      - "9090:8080"
+    depends_on:
+      - postgres
     environment:
-      # 한국 시간대 설정
       TZ: Asia/Seoul
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@host.docker.internal:5434/${POSTGRES_DB:-airflow}
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
       AIRFLOW__CORE__DEFAULT_TIMEZONE: Asia/Seoul
       AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW__WEBSERVER__SECRET_KEY:-your_secret_key_here}
-      # ETL용 환경 변수들 - PostgreSQL 호스트를 host.docker.internal로 변경
-      POSTGRES_HOST: host.docker.internal
-      POSTGRES_PORT: ${POSTGRES_PORT:-5434}
-      POSTGRES_USER: ${POSTGRES_USER:-airflow}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-airflow}
-      POSTGRES_DB: ${POSTGRES_DB:-airflow}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-ap-northeast-2}
@@ -34,21 +47,15 @@ services:
   airflow-scheduler:
     build: .
     command: scheduler
-    # depends_on 제거 - 외부 DB 사용
+    depends_on:
+      - postgres
     environment:
-      # 한국 시간대 설정
       TZ: Asia/Seoul
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@host.docker.internal:5434/${POSTGRES_DB:-airflow}
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
       AIRFLOW__CORE__DEFAULT_TIMEZONE: Asia/Seoul
-      # ETL용 환경 변수들 - PostgreSQL 호스트를 host.docker.internal로 변경
-      POSTGRES_HOST: host.docker.internal
-      POSTGRES_PORT: ${POSTGRES_PORT:-5434}
-      POSTGRES_USER: ${POSTGRES_USER:-airflow}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-airflow}
-      POSTGRES_DB: ${POSTGRES_DB:-airflow}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-ap-northeast-2}
@@ -59,3 +66,6 @@ services:
       - ./etl/dags:/opt/airflow/dags
       - ./etl/logs:/opt/airflow/logs
       - ./etl/output:/opt/airflow/output
+
+volumes:
+  postgres_db_volume:
