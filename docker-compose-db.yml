@@ -11,7 +11,7 @@ services:
     volumes:
       - postgres_db_volume:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5434:5432"  # 외부 포트 5434, 내부 포트 5432
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 5s

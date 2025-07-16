@@ -46,7 +46,7 @@ etl_dev/
 ```bash
 # PostgreSQL 데이터베이스 설정
 POSTGRES_HOST=postgres
-POSTGRES_PORT=5432
+POSTGRES_PORT=5432  # Docker 내부 통신용 (외부 접속은 5434)
 POSTGRES_USER=airflow
 POSTGRES_PASSWORD=airflow
 POSTGRES_DB=airflow
@@ -82,7 +82,7 @@ docker-compose logs -f
 
 ### 3. Airflow 웹 UI 접속
 
-- **URL**: http://localhost:8080
+- **URL**: http://localhost:9090 (젠킨스 및 기존 서비스와 포트 충돌 방지)
 - **계정**: admin / admin
 
 ## 스케줄링 설정
@@ -153,3 +153,10 @@ schedule_interval="0 */6 * * *"
    
 5. 완료
 ```
+
+## 📋 서버 배포 시 포트 설정
+
+### 사용하는 포트들
+- **Airflow Web UI**: 9090 (8080 젠킨스, 8090 등과 충돌 방지)
+- **PostgreSQL**: 5434 (5432 기존 PostgreSQL과 충돌 방지)
+- **이유**: 젠킨스 및 기존 PostgreSQL과의 포트 충돌 방지

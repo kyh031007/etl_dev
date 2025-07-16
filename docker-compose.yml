@@ -5,7 +5,7 @@ services:
     build: .
     command: webserver
     ports:
-      - "8080:8080"
+      - "9090:8080"  # 외부 포트 9090, 내부 포트 8080
     # depends_on 제거 - 외부 DB 사용
     environment:
       # 한국 시간대 설정
