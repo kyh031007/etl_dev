@@ -33,7 +33,7 @@ services:
       - ./etl/logs:/opt/airflow/logs
       - ./etl/output:/opt/airflow/output
     networks:
-      - default
+      - etl_network
 
   airflow-scheduler:
     build: .
@@ -47,7 +47,7 @@ services:
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
       AIRFLOW__CORE__DEFAULT_TIMEZONE: Asia/Seoul
-      # ETL용 환경 변수들 - PostgreSQL 호스트를 postgres로 변경
+      # ETL용 환경 변수들 - PostgreSQL 호스트를 air-pollution-db로 변경
       POSTGRES_HOST: air-pollution-db
       POSTGRES_PORT: ${POSTGRES_PORT:-5432}
       POSTGRES_USER: ${POSTGRES_USER:-airflow}
@@ -64,9 +64,9 @@ services:
       - ./etl/logs:/opt/airflow/logs
       - ./etl/output:/opt/airflow/output
     networks:
-      - default
+      - etl_network
 
 networks:
-  default:
+  etl_network:
     external: true
-    name: etl_dev_default 
+    name: etl_network 

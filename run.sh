@@ -18,7 +18,7 @@ docker-compose down
 
 # 네트워크 생성 (없으면 생성)
 echo "Docker 네트워크 설정 중..."
-docker network create etl_dev_default 2>/dev/null || true
+docker network create etl_network 2>/dev/null || true
 
 # PostgreSQL 상태 확인 및 시작
 echo "PostgreSQL 데이터베이스 상태 확인 중..."

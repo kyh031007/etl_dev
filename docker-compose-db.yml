@@ -17,6 +17,12 @@ services:
       interval: 5s
       retries: 5
     restart: unless-stopped
+    networks:
+      - etl_network
 
 volumes:
-  postgres_db_volume: 
+  postgres_db_volume:
+
+networks:
+  etl_network:
+    name: etl_network 
