@@ -16,11 +16,6 @@ chmod -R 777 etl/logs etl/output
 echo "Airflow 컨테이너 중지 중..."
 docker-compose down
 
-
-# 네트워크 생성 (없으면 생성)
-echo "Docker 네트워크 설정 중..."
-docker network create etl_network 2>/dev/null || true
-
 # PostgreSQL 상태 확인 및 시작
 echo "PostgreSQL 데이터베이스 상태 확인 중..."
 if ! docker-compose -f docker-compose-db.yml ps | grep -q "Up"; then
