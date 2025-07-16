@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  airflow-webserver:
+    build: .
+    command: webserver
+    ports:
+      - "8080:8080"
+    # depends_on 제거 - 외부 DB 사용
+    environment:
+      # 한국 시간대 설정
+      TZ: Asia/Seoul
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@postgres:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-airflow}
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__DEFAULT_TIMEZONE: Asia/Seoul
+      AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW__WEBSERVER__SECRET_KEY:-your_secret_key_here}
+      # ETL용 환경 변수들 - PostgreSQL 호스트를 postgres로 변경
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_USER: ${POSTGRES_USER:-airflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-airflow}
+      POSTGRES_DB: ${POSTGRES_DB:-airflow}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-ap-northeast-2}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME:-s3-airflow-toypjt-yh}
+      OPENAPI_SERVICE_KEY: ${OPENAPI_SERVICE_KEY}
+      OUTPUT_DIR: /opt/airflow/output
+    volumes:
+      - ./etl/dags:/opt/airflow/dags
+      - ./etl/logs:/opt/airflow/logs
+      - ./etl/output:/opt/airflow/output
+    networks:
+      - default
+
+  airflow-scheduler:
+    build: .
+    command: scheduler
+    # depends_on 제거 - 외부 DB 사용
+    environment:
+      # 한국 시간대 설정
+      TZ: Asia/Seoul
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@postgres:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-airflow}
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__DEFAULT_TIMEZONE: Asia/Seoul
+      # ETL용 환경 변수들 - PostgreSQL 호스트를 postgres로 변경
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_USER: ${POSTGRES_USER:-airflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-airflow}
+      POSTGRES_DB: ${POSTGRES_DB:-airflow}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-ap-northeast-2}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME:-s3-airflow-toypjt-yh}
+      OPENAPI_SERVICE_KEY: ${OPENAPI_SERVICE_KEY}
+      OUTPUT_DIR: /opt/airflow/output
+    volumes:
+      - ./etl/dags:/opt/airflow/dags
+      - ./etl/logs:/opt/airflow/logs
+      - ./etl/output:/opt/airflow/output
+    networks:
+      - default
+
+networks:
+  default:
+    external: true
+    name: etl_dev_default 

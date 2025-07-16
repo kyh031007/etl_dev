@@ -1,0 +1,9 @@
+.vscode
+logs/
+env_prcs
+pyproject.toml
+.flake8
+__pycache__
+test_proc.py
+test.xml
+etl/output/
