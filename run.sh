@@ -7,6 +7,11 @@ echo "ETL Airflow 시스템 배포를 시작합니다..."
 # 환경 변수 설정 (필요에 따라 수정)
 source .env
 
+# 필요한 디렉토리 생성 및 권한 설정
+echo "디렉토리 권한 설정 중..."
+mkdir -p etl/logs etl/output
+chmod -R 777 etl/logs etl/output
+
 # Airflow 컨테이너만 중지
 echo "Airflow 컨테이너 중지 중..."
 docker-compose down
