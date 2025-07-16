@@ -11,14 +11,14 @@ services:
       # 한국 시간대 설정
       TZ: Asia/Seoul
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@localhost:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-airflow}
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@air-pollution-db:${POSTGRES_PORT:-5434}/${POSTGRES_DB:-airflow}
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
       AIRFLOW__CORE__DEFAULT_TIMEZONE: Asia/Seoul
       AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW__WEBSERVER__SECRET_KEY:-your_secret_key_here}
       # ETL용 환경 변수들 - PostgreSQL 호스트를 postgres로 변경
-      POSTGRES_HOST: localhost
-      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_HOST: air-pollution-db
+      POSTGRES_PORT: ${POSTGRES_PORT:-5434}
       POSTGRES_USER: ${POSTGRES_USER:-airflow}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-airflow}
       POSTGRES_DB: ${POSTGRES_DB:-airflow}
@@ -43,13 +43,13 @@ services:
       # 한국 시간대 설정
       TZ: Asia/Seoul
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@localhost:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-airflow}
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@air-pollution-db:${POSTGRES_PORT:-5434}/${POSTGRES_DB:-airflow}
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
       AIRFLOW__CORE__DEFAULT_TIMEZONE: Asia/Seoul
       # ETL용 환경 변수들 - PostgreSQL 호스트를 localhost로 변경
-      POSTGRES_HOST: localhost
-      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_HOST: air-pollution-db
+      POSTGRES_PORT: ${POSTGRES_PORT:-5434}
       POSTGRES_USER: ${POSTGRES_USER:-airflow}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-airflow}
       POSTGRES_DB: ${POSTGRES_DB:-airflow}
