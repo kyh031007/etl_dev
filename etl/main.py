@@ -83,7 +83,6 @@ def s3_connection(managerDAO, logger):
         aws_default_region = aws_s3_info.get("aws_default_region")
         s3_bucket_name = aws_s3_info.get("s3_bucket_name")
 
-        # S3 연결
         s3 = boto3.client(
             service_name="s3",
             region_name=aws_default_region,
@@ -91,14 +90,10 @@ def s3_connection(managerDAO, logger):
             aws_secret_access_key=aws_secret_access_key,
         )
         logger.info("S3 연결 완료")
-
-    except Exception as e:
-        print(e)
-    else:
-        logger.info("s3 bucket connected!")
-        response = s3.list_buckets()
-        logger.info("Buckets:", [b["Name"] for b in response["Buckets"]])
         return s3, s3_bucket_name
+    except Exception as e:
+        logger.error(f"S3 연결 실패: {str(e)}")
+        raise
 
 
 s3, s3_bucket_name = s3_connection(managerDAO, logger)
