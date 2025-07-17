@@ -11,19 +11,12 @@ pipeline {
                 echo "최신 코드 가져오기..."
                 script {
                     sh """
-                        su - jian
-                        
-                        expect << EOF
-                        spawn su - jian
-                        expect "Password:"
-                        send "jian123!\r"
-                        expect eof
-                        EOF
-                        
+                        sudo -u jian
+
                         cd ${DEPLOY_DIR}
                         
                         # Git pull 실행 (에러 처리 포함)
-                        git pull origin master
+                        sudo -u jian git pull origin master
                         echo "최신 커밋: \$(git log --oneline -1)"
                     """
                 }
@@ -38,10 +31,10 @@ pipeline {
                         cd ${DEPLOY_DIR}
                         
                         # 스크립트 실행 권한 설정
-                        chmod +x run.sh 2>/dev/null || echo "run.sh 권한 설정 실패"
+                        sudo -u jian chmod +x run.sh 2>/dev/null || echo "run.sh 권한 설정 실패"
                         
                         # 배포 실행
-                        ./run.sh
+                        sudo -u jian ./run.sh
                     """
                 }
             }
