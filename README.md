@@ -51,12 +51,6 @@ POSTGRES_USER=airflow
 POSTGRES_PASSWORD=airflow
 POSTGRES_DB=airflow
 
-# AWS S3 설정
-AWS_ACCESS_KEY_ID=your_access_key_here
-AWS_SECRET_ACCESS_KEY=your_secret_key_here
-AWS_DEFAULT_REGION=ap-northeast-2
-S3_BUCKET_NAME=your_bucket_name
-
 # API 키 설정
 OPENAPI_SERVICE_KEY=your_openapi_service_key_here
 
@@ -66,6 +60,11 @@ AIRFLOW__WEBSERVER__SECRET_KEY=your_secret_key_here
 # 출력 디렉토리
 OUTPUT_DIR=/opt/airflow/output
 ```
+
+-- S3 연동을 위해 아래 쿼리를 PostgreSQL에서 실행하세요 (init-db.sql 참고)
+insert into public.aws_s3_info(aws_access_key_id, aws_secret_access_key, aws_default_region, s3_bucket_name)
+values ('your_access_key_id','your_secret_access_key','your_default_region','your_bucket_name');
+-- 실제 배포 시에는 각 항목을 본인의 AWS 정보로 변경하세요.
 
 ### 2. 서비스 시작
 
