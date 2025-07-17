@@ -5,7 +5,7 @@ create table public.api_info
     api_url   varchar(255)                              not null,
     api_name  varchar(255)                              not null,
     actv_yn   varchar(2) default 'Y'::character varying not null,
-    create_at timestamp  default now()
+    created_at timestamp  default now()
 );
 
 alter table public.api_info
@@ -49,7 +49,7 @@ alter table public.proc_info
 
 
 
-INSERT INTO public.api_info (api_id, api_url, api_name, actv_yn, create_at) VALUES ('API_1', 'http://apis.data.go.kr/1480523/MetalMeasuringResultService/MetalService', '환경부 국립환경과학원_미세먼지(금속성분) 실시간 정보', 'Y', '2025-07-16 10:32:22.341323');
+INSERT INTO public.api_info (api_id, api_url, api_name, actv_yn, created_at) VALUES ('API_1', 'http://apis.data.go.kr/1480523/MetalMeasuringResultService/MetalService', '환경부 국립환경과학원_미세먼지(금속성분) 실시간 정보', 'Y', '2025-07-16 10:32:22.341323');
 INSERT INTO public.api_request_params (api_id, req_params, req_params_kor, actv_yn, created_at) VALUES ('API_1', 'numOfRows', '페이지 크기', 'Y', '2025-07-16 10:34:40.035583');
 INSERT INTO public.api_request_params (api_id, req_params, req_params_kor, actv_yn, created_at) VALUES ('API_1', 'pageNo', '페이지 번호', 'Y', '2025-07-16 10:34:40.035583');
 INSERT INTO public.api_request_params (api_id, req_params, req_params_kor, actv_yn, created_at) VALUES ('API_1', 'serviceKey', '서비스 키', 'Y', '2025-07-16 10:34:40.035583');
@@ -130,3 +130,15 @@ INSERT INTO public.proc_info (api_id, ori_col, info, created_at) VALUES ('API_1'
   "alias": "측정수치(ng/m3)",
   "dtype": "float"
 }', '2025-07-16 14:18:05.860170');
+
+
+create table aws_s3_info(
+    aws_access_key_id varchar(1000) not null ,
+    aws_secret_access_key varchar(1000) not null ,
+    aws_default_region varchar(255) not null ,
+    s3_bucket_name varchar(255) not null
+);
+
+
+insert into public.aws_s3_info(aws_access_key_id, aws_secret_access_key, aws_default_region, s3_bucket_name)
+values ('your_access_key_id','your_secret_access_key','your_default_region','your_bucket_name')
