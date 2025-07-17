@@ -11,8 +11,6 @@ pipeline {
                 echo "최신 코드 가져오기..."
                 script {
                     sh """
-                        sudo -u jian
-
                         cd ${DEPLOY_DIR}
                         
                         # Git pull 실행 (에러 처리 포함)
