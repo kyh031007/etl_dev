@@ -7,3 +7,5 @@ __pycache__
 test_proc.py
 test.xml
 etl/output/
+.env
+etl/.env
