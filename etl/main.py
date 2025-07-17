@@ -72,37 +72,43 @@ logger = configure_logging()
 # DB 연결
 db = create_engine(config.DB_URL)
 
+managerDAO = ManagerDAO(db, logger)
 
-def s3_connection():
+
+def s3_connection(managerDAO, logger):
     try:
-        # s3 클라이언트 생성
+        aws_s3_info = managerDAO.get_aws_s3_client()[0]
+        aws_access_key_id = aws_s3_info.get("aws_access_key_id")
+        aws_secret_access_key = aws_s3_info.get("aws_secret_access_key")
+        aws_default_region = aws_s3_info.get("aws_default_region")
+        s3_bucket_name = aws_s3_info.get("s3_bucket_name")
+
+        # S3 연결
         s3 = boto3.client(
             service_name="s3",
-            region_name=config.AWS_DEFAULT_REGION,
-            aws_access_key_id=config.AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=config.AWS_SECRET_ACCESS_KEY,
+            region_name=aws_default_region,
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
         )
+        logger.info("S3 연결 완료")
+
     except Exception as e:
         print(e)
     else:
         logger.info("s3 bucket connected!")
         response = s3.list_buckets()
         logger.info("Buckets:", [b["Name"] for b in response["Buckets"]])
-        return s3
+        return s3, s3_bucket_name
 
 
-s3 = s3_connection()
+s3, s3_bucket_name = s3_connection(managerDAO, logger)
 
 session = boto3.Session()
 creds = session.get_credentials()
 
-bucket_name = config.S3_BUCKET_NAME
-
-managerDAO = ManagerDAO(db, logger)
-
 dc = dataCollector(config, logger, managerDAO)
 dp = dataProccess(config, logger, managerDAO)
-su = s3Uploader(s3, bucket_name, logger, managerDAO)
+su = s3Uploader(s3, s3_bucket_name, logger, managerDAO)
 
 
 # 데이터 수집저장 -> 가공저장 -> S3 업로드

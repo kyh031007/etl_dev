@@ -1,5 +1,3 @@
-from typing import Dict, Optional
-
 from sqlalchemy import text
 
 
@@ -79,6 +77,18 @@ class ManagerDAO:
 
         with self.db.connect() as connection:
             result = connection.execute(text(sql), payload)
+            result_set = [dict(row) for row in result]
+
+            return result_set
+
+    def get_aws_s3_client(self):
+        sql = """
+            SELECT aws_access_key_id, aws_secret_access_key, aws_default_region, s3_bucket_name
+            FROM aws_s3_info
+        """
+
+        with self.db.connect() as connection:
+            result = connection.execute(text(sql))
             result_set = [dict(row) for row in result]
 
             return result_set

@@ -20,10 +20,10 @@ class Config:
     DB_URL = f"postgresql://{postgres_user}:{postgres_password}@{postgres_host}:{postgres_port}/{postgres_db}"
 
     # AWS S3 설정
-    AWS_ACCESS_KEY_ID: str = os.getenv("AWS_ACCESS_KEY_ID", "")
-    AWS_SECRET_ACCESS_KEY: str = os.getenv("AWS_SECRET_ACCESS_KEY", "")
-    AWS_DEFAULT_REGION: str = os.getenv("AWS_DEFAULT_REGION", "ap-northeast-2")
-    S3_BUCKET_NAME: str = os.getenv("S3_BUCKET_NAME", "s3-airflow-toypjt-yh")
+    # AWS_ACCESS_KEY_ID: str = os.getenv("AWS_ACCESS_KEY_ID", "")
+    # AWS_SECRET_ACCESS_KEY: str = os.getenv("AWS_SECRET_ACCESS_KEY", "")
+    # AWS_DEFAULT_REGION: str = os.getenv("AWS_DEFAULT_REGION", "ap-northeast-2")
+    # S3_BUCKET_NAME: str = os.getenv("S3_BUCKET_NAME", "s3-airflow-toypjt-yh")
 
     OUTPUT_DIR: str = os.getenv("OUTPUT_DIR", "/Users/gim-yeonghwan/my_dev/etl_dev/etl/output")
 

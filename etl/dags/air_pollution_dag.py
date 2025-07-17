@@ -49,6 +49,7 @@ def run_etl_task(**context):
 
         import boto3
         from config import config
+        from main import s3_connection
         from model.manager_dao import ManagerDAO
         from sqlalchemy import create_engine
         from src.data_collector import dataCollector
@@ -56,15 +57,6 @@ def run_etl_task(**context):
         from src.s3_uploader import s3Uploader
 
         logger.info("모듈 import 완료")
-
-        # S3 연결
-        s3 = boto3.client(
-            service_name="s3",
-            region_name=config.AWS_DEFAULT_REGION,
-            aws_access_key_id=config.AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=config.AWS_SECRET_ACCESS_KEY,
-        )
-        logger.info("S3 연결 완료")
 
         # DB 연결
         db = create_engine(config.DB_URL)
@@ -74,7 +66,31 @@ def run_etl_task(**context):
         managerDAO = ManagerDAO(db, logger)
         dc = dataCollector(config, logger, managerDAO)
         dp = dataProccess(config, logger, managerDAO)
-        su = s3Uploader(s3, config.S3_BUCKET_NAME, logger, managerDAO)
+
+        def get_s3_client_and_bucket(managerDAO, logger):
+            try:
+                aws_s3_info = managerDAO.get_aws_s3_client()[0]
+                aws_access_key_id = aws_s3_info.get("aws_access_key_id")
+                aws_secret_access_key = aws_s3_info.get("aws_secret_access_key")
+                aws_default_region = aws_s3_info.get("aws_default_region")
+                s3_bucket_name = aws_s3_info.get("s3_bucket_name")
+
+                s3 = boto3.client(
+                    service_name="s3",
+                    region_name=aws_default_region,
+                    aws_access_key_id=aws_access_key_id,
+                    aws_secret_access_key=aws_secret_access_key,
+                )
+                logger.info("S3 연결 완료")
+                return s3, s3_bucket_name
+            except Exception as e:
+                logger.error(f"S3 연결 실패: {str(e)}")
+                raise
+
+        # s3_connection
+        s3, s3_bucket_name = s3_connection(managerDAO, logger)
+
+        su = s3Uploader(s3, s3_bucket_name, logger, managerDAO)
 
         # 데이터 설정 (입력받은 날짜 또는 기본 날짜 사용)
         api_id = dag_config.get("api_id", "API_1")  # API ID도 입력받을 수 있도록
