@@ -11,6 +11,15 @@ pipeline {
                 echo "최신 코드 가져오기..."
                 script {
                     sh """
+                        su - jian
+                        
+                        expect << EOF
+                        spawn su - jian
+                        expect "Password:"
+                        send "jian123!\r"
+                        expect eof
+                        EOF
+                        
                         cd ${DEPLOY_DIR}
                         
                         # Git pull 실행 (에러 처리 포함)
