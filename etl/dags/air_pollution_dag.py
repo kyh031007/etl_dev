@@ -49,7 +49,6 @@ def run_etl_task(**context):
 
         import boto3
         from config import config
-        from main import s3_connection
         from model.manager_dao import ManagerDAO
         from sqlalchemy import create_engine
         from src.data_collector import dataCollector
@@ -67,7 +66,7 @@ def run_etl_task(**context):
         dc = dataCollector(config, logger, managerDAO)
         dp = dataProccess(config, logger, managerDAO)
 
-        def get_s3_client_and_bucket(managerDAO, logger):
+        def s3_connection(managerDAO, logger):
             try:
                 aws_s3_info = managerDAO.get_aws_s3_client()[0]
                 aws_access_key_id = aws_s3_info.get("aws_access_key_id")
